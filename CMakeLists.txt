@@ -189,6 +189,7 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-local-typedef -Wno-unknown-warning-option")
     if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
         set(CMAKE_CXX_FLAGS "-gcc -std=c++11 -pragma-optimization-level=GCC ${CMAKE_CXX_FLAGS}")
+        add_definitions(-D_IntelCXX)
     endif()
   else() 
     # GCC specific compiler options
