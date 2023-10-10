@@ -149,6 +149,11 @@ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
       MSVC_VERSION EQUAL 1700)
     set(CASS_USE_STD_ATOMIC ON)
   endif()
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL "13.0" OR
+      CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "13.0")
+    set(CASS_USE_STD_ATOMIC ON)
+  endif()
 endif()
 
 if(CASS_USE_BOOST_ATOMIC)
@@ -162,6 +167,7 @@ endif()
 #------------------------
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR
+   "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel" OR
    "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # Enable C++11 support to use std::atomic
   if(CASS_USE_STD_ATOMIC)
@@ -174,12 +180,16 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
   endif()
 
-  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang") 
+  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR
+     "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
     # Clang/Intel specific compiler options
     # I disabled long-long warning because boost generates about 50 such warnings
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wextra -Wno-long-long -Wno-unused-parameter")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-variadic-macros -Wno-zero-length-array")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-local-typedef -Wno-unknown-warning-option")
+    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
+        set(CMAKE_CXX_FLAGS "-gcc -std=c++11 -pragma-optimization-level=GCC ${CMAKE_CXX_FLAGS}")
+    endif()
   else() 
     # GCC specific compiler options
     # I disabled long-long warning because boost generates about 50 such warnings
