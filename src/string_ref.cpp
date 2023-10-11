@@ -18,6 +18,6 @@
 
 namespace datastax {
 
-const StringRef::size_type StringRef::npos = -1;
+const StringRef::size_type StringRef::npos = StringRef::size_type(-1);
 
 } // namespace datastax
